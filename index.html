@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eRastreAçor Convoca — Demo Interativa</title>
+<style>
+:root{
+  --navy:#17233b;
+  --navy2:#223455;
+  --gold:#e8b44f;
+  --green:#4d9677;
+  --red:#b65a5a;
+  --blue:#3f73b7;
+  --bg:#f4f6fa;
+  --card:#ffffff;
+  --muted:#687386;
+  --text:#172033;
+  --border:#d8dee9;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:linear-gradient(135deg,var(--navy),#0e1830);
+  color:white;
+  padding:28px 34px;
+  border-bottom:6px solid var(--gold);
+}
+header .eyebrow{
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#cbd4e6;
+  font-size:12px;
+  font-weight:700;
+}
+header h1{
+  margin:8px 0 6px;
+  font-size:38px;
+  line-height:1.05;
+}
+header p{
+  margin:0;
+  color:#e8edf7;
+  font-size:17px;
+}
+.demo-warning{
+  margin:18px 34px 0;
+  padding:13px 16px;
+  background:#fff8e7;
+  border:1px solid #efd08a;
+  border-left:7px solid var(--gold);
+  border-radius:8px;
+  color:#604417;
+  font-weight:600;
+}
+main{
+  padding:24px 34px 40px;
+  max-width:1380px;
+  margin:auto;
+}
+.toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  margin-bottom:18px;
+}
+button,.file-label{
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  background:var(--navy2);
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+  transition:.12s ease;
+}
+button:hover,.file-label:hover{transform:translateY(-1px); filter:brightness(1.05)}
+button:disabled{opacity:.45; cursor:not-allowed; transform:none}
+.btn-gold{background:var(--gold); color:#1d2537}
+.btn-green{background:var(--green)}
+.btn-red{background:var(--red)}
+.btn-blue{background:var(--blue)}
+.btn-light{background:#e8edf7; color:var(--navy)}
+input[type=file]{display:none}
+.grid{
+  display:grid;
+  grid-template-columns: 1.35fr .9fr;
+  gap:18px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(22,34,59,.08);
+  overflow:hidden;
+}
+.card h2{
+  margin:0;
+  padding:16px 18px;
+  background:white;
+  border-bottom:1px solid var(--border);
+  color:var(--navy);
+  font-size:20px;
+}
+.card .body{padding:16px 18px}
+.metrics{
+  display:grid;
+  grid-template-columns: repeat(4,minmax(110px,1fr));
+  gap:12px;
+  margin-bottom:18px;
+}
+.metric{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 4px 14px rgba(22,34,59,.07);
+}
+.metric .num{
+  font-size:30px;
+  font-weight:850;
+  color:var(--navy);
+  line-height:1;
+}
+.metric .label{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+}
+.metric.gold .num{color:#b9831f}
+.metric.green .num{color:var(--green)}
+.metric.red .num{color:var(--red)}
+.metric.blue .num{color:var(--blue)}
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:13px;
+}
+th,td{
+  border-bottom:1px solid #e5e9f2;
+  padding:10px 8px;
+  text-align:left;
+  vertical-align:top;
+}
+th{
+  color:#39465e;
+  background:#f8f9fc;
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+tbody tr:hover{background:#fbfcff}
+.table-wrap{
+  max-height:430px;
+  overflow:auto;
+}
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.b-pendente{background:#fff2d6;color:#7b5315}
+.b-enviado{background:#e7f0ff;color:#23528e}
+.b-confirmado{background:#dff3e8;color:#27684c}
+.b-excecao{background:#ffe6e6;color:#973b3b}
+.b-validar{background:#eee7ff;color:#573d98}
+.b-optout{background:#f3f3f5;color:#424650}
+.b-lembrete{background:#e9f7f7;color:#216d73}
+.b-nao{background:#f6e4e4;color:#823838}
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:12px;
+  flex-wrap:wrap;
+}
+.tab{
+  background:#edf1f8;
+  color:#34425a;
+  padding:8px 10px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:12px;
+}
+.stepper{
+  display:grid;
+  grid-template-columns: repeat(5,1fr);
+  gap:8px;
+  margin-bottom:18px;
+}
+.step{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  font-size:12px;
+  color:#506077;
+}
+.step strong{display:block;color:var(--navy);font-size:13px;margin-bottom:2px}
+.step.active{border-color:var(--gold); box-shadow:0 0 0 3px rgba(232,180,79,.22)}
+.sms-preview{
+  background:#f7f9fd;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.phone{
+  width:100%;
+  background:#111b2e;
+  border-radius:28px;
+  padding:18px 12px;
+  color:white;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.08);
+}
+.phone-screen{
+  background:#eef3fa;
+  color:#152033;
+  min-height:225px;
+  border-radius:20px;
+  padding:14px;
+}
+.bubble{
+  max-width:92%;
+  background:white;
+  border-radius:16px 16px 16px 4px;
+  padding:11px 13px;
+  margin-bottom:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.12);
+  font-size:14px;
+}
+.bubble.reply{
+  margin-left:auto;
+  background:#dff3e8;
+  border-radius:16px 16px 4px 16px;
+}
+.small{
+  color:var(--muted);
+  font-size:12px;
+}
+.select-row{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+select,input[type=text]{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+  background:white;
+  min-width:180px;
+}
+.log{
+  max-height:240px;
+  overflow:auto;
+  background:#101a2d;
+  color:#d9e3f4;
+  border-radius:12px;
+  padding:12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size:12px;
+}
+.log div{
+  padding:4px 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.guardrails{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.guard{
+  border-left:5px solid var(--green);
+  background:#f6fbf8;
+  padding:11px;
+  border-radius:9px;
+  font-size:13px;
+  font-weight:650;
+}
+.guard.warn{border-left-color:var(--gold); background:#fffaf0}
+.footer-actions{
+  margin-top:18px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+@media(max-width:1000px){
+  .grid{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .stepper{grid-template-columns:1fr}
+}
+@media print{
+  .toolbar,.footer-actions,.select-row{display:none}
+  header{background:#17233b!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Curso GenAI Avançado · Demo interativa obrigatória</div>
+  <h1>eRastreAçor Convoca</h1>
+  <p>Sandbox local para demonstrar como uma lista ROCCA pode originar uma campanha digital com SMS/e-mail, respostas, lembretes, log e supervisão humana.</p>
+</header>
+
+<div class="demo-warning">
+  Demonstração pedagógica com dados 100% fictícios. Nenhum SMS ou e-mail real é enviado. A simulação mostra o fluxo que, em produção, exigiria sistemas institucionais, gateway aprovado e validação RGPD.
+</div>
+
+<main>
+  <div class="toolbar">
+    <button class="btn-gold" onclick="loadDemoData()">Carregar lista demo</button>
+    <label class="file-label" for="csvInput">Importar CSV</label>
+    <input id="csvInput" type="file" accept=".csv" onchange="handleFile(event)">
+    <button onclick="validateList()">1. Validar lista</button>
+    <button class="btn-blue" onclick="generateCampaign()">2. Gerar campanha</button>
+    <button class="btn-green" onclick="simulateSend()">3. Enviar simulado</button>
+    <button class="btn-light" onclick="resetDemo()">Reiniciar</button>
+  </div>
+
+  <div class="stepper">
+    <div id="step0" class="step active"><strong>0 · Lista</strong>Carregar CSV ou dados demo</div>
+    <div id="step1" class="step"><strong>1 · Validação</strong>Campos, elegibilidade e contactos</div>
+    <div id="step2" class="step"><strong>2 · Campanha</strong>Templates seguros e canal</div>
+    <div id="step3" class="step"><strong>3 · Envio</strong>SMS/e-mail simulado</div>
+    <div id="step4" class="step"><strong>4 · Resposta</strong>Dashboard, log e exceções</div>
+  </div>
+
+  <section class="metrics">
+    <div class="metric gold"><div id="mTotal" class="num">0</div><div class="label">Utentes na lista</div></div>
+    <div class="metric blue"><div id="mEnviar" class="num">0</div><div class="label">Convocatórias preparadas</div></div>
+    <div class="metric green"><div id="mConfirm" class="num">0</div><div class="label">Confirmações / agendamentos</div></div>
+    <div class="metric red"><div id="mExcecao" class="num">0</div><div class="label">Exceções para humano</div></div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Lista de trabalho</h2>
+      <div class="body">
+        <div class="tabs">
+          <span class="tab" id="tabLoaded">0 carregadas</span>
+          <span class="tab" id="tabValid">0 elegíveis</span>
+          <span class="tab" id="tabManual">0 validação humana</span>
+          <span class="tab" id="tabSent">0 envios simulados</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Utente fictícia</th>
+                <th>Idade</th>
+                <th>Canal</th>
+                <th>Estado</th>
+                <th>Mensagem / próxima ação</th>
+              </tr>
+            </thead>
+            <tbody id="peopleBody">
+              <tr><td colspan="6" class="small">Carrega a lista demo para iniciar.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h2>Telemóvel de teste / resposta da utente</h2>
+      <div class="body">
+        <div class="sms-preview">
+          <div class="phone">
+            <div class="phone-screen" id="phoneScreen">
+              <div class="bubble">Quando enviares a campanha, a mensagem de convocatória aparecerá aqui.</div>
+            </div>
+          </div>
+          <div class="select-row">
+            <select id="personSelect"></select>
+            <button class="btn-green" onclick="respond('SIM')">Responder SIM</button>
+            <button class="btn-blue" onclick="respond('JA_FIZ')">Já fiz</button>
+            <button class="btn-gold" onclick="respond('DUVIDA')">Tenho dúvida</button>
+            <button class="btn-red" onclick="respond('STOP')">STOP</button>
+            <button class="btn-light" onclick="respond('SEM_RESPOSTA')">Sem resposta → lembrete</button>
+          </div>
+          <p class="small">Na demo, estas respostas substituem a integração real com gateway SMS/e-mail.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="grid" style="margin-top:18px">
+    <section class="card">
+      <h2>Log auditável da campanha</h2>
+      <div class="body">
+        <div id="logBox" class="log"><div>[00:00] Sistema pronto. Carregar lista para iniciar.</div></div>
+        <div class="footer-actions">
+          <button class="btn-light" onclick="exportLog()">Exportar log CSV</button>
+          <button class="btn-light" onclick="copySummary()">Copiar resumo para o relatório</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h2>Guardrails e supervisão humana</h2>
+      <div class="body">
+        <div class="guardrails">
+          <div class="guard">A IA não diagnostica nem decide elegibilidade clínica.</div>
+          <div class="guard">Dúvida, resposta livre ou incoerência → validação humana.</div>
+          <div class="guard warn">SMS sem dados sensíveis: não menciona cancro nem detalhe clínico.</div>
+          <div class="guard warn">Dados reais só em ambiente institucional aprovado.</div>
+          <div class="guard">Opt-out por SMS não é recusa do rastreio.</div>
+          <div class="guard">Toda a ação fica registada com data, canal, estado e próxima ação.</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+const demoCSV = `id,nome_ficticio,idade,estado_rocca,canal_preferido,telemovel,email,ultima_tentativa,observacoes
+U001,Ana Silveira,54,Pendente,SMS,912000001,ana.demo@exemplo.pt,2026-06-01,Sem resposta a 2 chamadas
+U002,Beatriz Melo,61,Pendente,SMS,912000002,,2026-06-04,Linha ocupada
+U003,Carla Sousa,49,Pendente,Email,912000003,carla.demo@exemplo.pt,2026-06-03,Sem resposta a 3 chamadas
+U004,Dina Ferreira,67,Pendente,SMS,912000004,dina.demo@exemplo.pt,2026-06-06,Recusou marcar telefonicamente
+U005,Elisa Costa,52,Pendente,SMS,912000005,elisa.demo@exemplo.pt,2026-06-02,Sem resposta
+U006,Fátima Ávila,58,Pendente,SMS,912000006,,,
+U007,Graça Nunes,55,Pendente,Email,,graca.demo@exemplo.pt,,
+U008,Helena Pires,63,Pendente,SMS,912000008,helena.demo@exemplo.pt,,
+U009,Isabel Raposo,46,Pendente,SMS,912000009,isabel.demo@exemplo.pt,,
+U010,Joana Teixeira,59,Pendente,Email,912000010,joana.demo@exemplo.pt,,
+U011,Lurdes Bettencourt,70,Fora de critério,SMS,912000011,lurdes.demo@exemplo.pt,,Idade fora do intervalo definido para demo
+U012,Maria Vasconcelos,57,Pendente,SMS,,maria.demo@exemplo.pt,,Sem telemóvel; usar e-mail`;
+
+let people = [];
+let logEntries = [];
+let currentStep = 0;
+
+function now(){
+  const d = new Date();
+  return d.toLocaleTimeString('pt-PT', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+function log(msg){
+  const entry = `[${now()}] ${msg}`;
+  logEntries.push(entry);
+  const box = document.getElementById("logBox");
+  box.innerHTML = logEntries.map(e => `<div>${escapeHtml(e)}</div>`).join("");
+  box.scrollTop = box.scrollHeight;
+}
+function escapeHtml(s){
+  return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function parseCSV(text){
+  // Parser simples suficiente para a lista demo. Aceita vírgulas e linhas sem aspas complexas.
+  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+  const headers = lines.shift().split(",").map(h => h.trim());
+  return lines.map(line => {
+    const vals = line.split(",");
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = (vals[i] || "").trim());
+    obj.id = obj.id || obj.ID || "";
+    obj.nome_ficticio = obj.nome_ficticio || obj.nome || "";
+    obj.idade = Number(obj.idade || 0);
+    obj.estado_rocca = obj.estado_rocca || "Pendente";
+    obj.canal_preferido = obj.canal_preferido || "SMS";
+    obj.telemovel = obj.telemovel || "";
+    obj.email = obj.email || "";
+    obj.status = "Por validar";
+    obj.nextAction = "Aguardar validação";
+    obj.message = "";
+    obj.channel = "";
+    obj.response = "";
+    obj.sent = false;
+    return obj;
+  });
+}
+function loadDemoData(){
+  people = parseCSV(demoCSV);
+  logEntries = [];
+  log("Lista demo carregada: 12 utentes fictícias.");
+  setStep(0);
+  render();
+}
+function handleFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    people = parseCSV(e.target.result);
+    logEntries = [];
+    log(`CSV importado: ${file.name}. Registos carregados: ${people.length}.`);
+    setStep(0);
+    render();
+  };
+  reader.readAsText(file, "UTF-8");
+}
+function validateList(){
+  if(!people.length){ alert("Carrega primeiro a lista demo ou um CSV."); return; }
+  people.forEach(p => {
+    if(p.idade < 30 || p.idade > 69 || /fora/i.test(p.estado_rocca)){
+      p.status = "Validar manualmente";
+      p.nextAction = "Fora do intervalo/critério da campanha demo";
+    } else if(!p.telemovel && !p.email){
+      p.status = "Validar manualmente";
+      p.nextAction = "Sem canal digital válido";
+    } else if(/recus/i.test(p.observacoes || "")){
+      p.status = "Validar manualmente";
+      p.nextAction = "Recusa prévia: abordagem humana recomendada";
+    } else {
+      p.status = "Elegível para campanha";
+      p.nextAction = "Gerar mensagem";
+    }
+  });
+  log("Validação concluída: elegibilidade operacional, canais e exceções assinalados.");
+  setStep(1);
+  render();
+}
+function safeMessage(p){
+  // Mensagem neutra, sem revelar detalhe clínico.
+  return `Centro de Saúde: tem uma convocatória preventiva pendente. Responda SIM para pedir agendamento, JA FIZ se já realizou, DUVIDA para contacto da equipa, ou STOP para deixar de receber SMS.`;
+}
+function emailMessage(p){
+  return `Exma. Senhora ${p.nome_ficticio}, o seu Centro de Saúde convida-a a atualizar um cuidado preventivo recomendado. Pode pedir agendamento ou contacto da equipa respondendo a esta mensagem.`;
+}
+function generateCampaign(){
+  if(!people.length){ alert("Carrega primeiro a lista."); return; }
+  if(people.every(p => p.status === "Por validar")) validateList();
+  people.forEach(p => {
+    if(p.status === "Elegível para campanha"){
+      if(p.canal_preferido.toLowerCase().includes("email") && p.email){
+        p.channel = "E-mail";
+        p.message = emailMessage(p);
+      } else if(p.telemovel){
+        p.channel = "SMS";
+        p.message = safeMessage(p);
+      } else if(p.email){
+        p.channel = "E-mail";
+        p.message = emailMessage(p);
+      } else {
+        p.status = "Validar manualmente";
+        p.nextAction = "Sem canal digital válido";
+        return;
+      }
+      p.nextAction = `Campanha preparada por ${p.channel}`;
+    }
+  });
+  log("Campanha gerada: templates seguros criados e canal escolhido por utente.");
+  setStep(2);
+  render();
+}
+function simulateSend(){
+  if(!people.length){ alert("Carrega primeiro a lista."); return; }
+  if(!people.some(p => p.message)) generateCampaign();
+  let sent = 0;
+  people.forEach(p => {
+    if(p.status === "Elegível para campanha" && p.message){
+      p.status = "Enviado";
+      p.sent = true;
+      p.nextAction = "Aguardar resposta 48h";
+      sent++;
+    }
+  });
+  log(`Envio simulado concluído: ${sent} SMS/e-mails registados no log.`);
+  setStep(3);
+  render();
+  showPhoneForSelected();
+}
+function respond(type){
+  const id = document.getElementById("personSelect").value;
+  const p = people.find(x => x.id === id);
+  if(!p){ alert("Escolhe uma utente enviada."); return; }
+  if(!p.sent){ alert("Esta utente ainda não tem envio simulado."); return; }
+  let reply = "";
+  if(type === "SIM"){
+    p.status = "Confirmado";
+    p.response = "SIM";
+    p.nextAction = "Criar tarefa de agendamento / confirmar disponibilidade";
+    reply = "SIM";
+    log(`${p.id}: resposta SIM recebida. Estado atualizado para agendamento.`);
+  } else if(type === "JA_FIZ"){
+    p.status = "Validar manualmente";
+    p.response = "JA FIZ";
+    p.nextAction = "Validar realização do rastreio em sistema/COA";
+    reply = "JA FIZ";
+    log(`${p.id}: utente refere que já realizou. Encaminhado para validação humana.`);
+  } else if(type === "DUVIDA"){
+    p.status = "Exceção humana";
+    p.response = "DUVIDA";
+    p.nextAction = "Contacto humano por secretariado/enfermagem";
+    reply = "Tenho dúvida";
+    log(`${p.id}: dúvida recebida. Escalonado para humano.`);
+  } else if(type === "STOP"){
+    p.status = "Pedido de não contacto";
+    p.response = "STOP";
+    p.nextAction = "Não contactar por SMS; avaliar outro canal permitido";
+    reply = "STOP";
+    log(`${p.id}: pedido de não contacto por SMS registado. Não é recusa clínica do rastreio.`);
+  } else if(type === "SEM_RESPOSTA"){
+    p.status = "Lembrete agendado";
+    p.response = "Sem resposta";
+    p.nextAction = "Lembrete automático em 7 dias";
+    reply = "— sem resposta —";
+    log(`${p.id}: sem resposta. Lembrete automático agendado.`);
+  }
+  setStep(4);
+  render();
+  showPhoneForSelected(reply);
+}
+function setStep(n){
+  currentStep = n;
+  for(let i=0;i<=4;i++){
+    const el = document.getElementById("step"+i);
+    if(el) el.classList.toggle("active", i === n);
+  }
+}
+function statusBadge(status){
+  const s = status || "";
+  let cls = "b-pendente";
+  if(/enviado/i.test(s)) cls = "b-enviado";
+  if(/confirm/i.test(s)) cls = "b-confirmado";
+  if(/exce/i.test(s)) cls = "b-excecao";
+  if(/validar/i.test(s)) cls = "b-validar";
+  if(/não contacto/i.test(s)) cls = "b-optout";
+  if(/lembrete/i.test(s)) cls = "b-lembrete";
+  if(/não|recusa/i.test(s)) cls = "b-nao";
+  return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
+}
+function render(){
+  const body = document.getElementById("peopleBody");
+  if(!people.length){
+    body.innerHTML = `<tr><td colspan="6" class="small">Carrega a lista demo para iniciar.</td></tr>`;
+  } else {
+    body.innerHTML = people.map(p => `
+      <tr>
+        <td><strong>${escapeHtml(p.id)}</strong></td>
+        <td>${escapeHtml(p.nome_ficticio)}</td>
+        <td>${escapeHtml(p.idade)}</td>
+        <td>${escapeHtml(p.channel || p.canal_preferido || "—")}</td>
+        <td>${statusBadge(p.status)}</td>
+        <td><strong>${escapeHtml(p.nextAction || "")}</strong><br><span class="small">${escapeHtml(p.message || p.observacoes || "")}</span></td>
+      </tr>
+    `).join("");
+  }
+  const total = people.length;
+  const prepared = people.filter(p => p.message).length;
+  const confirmed = people.filter(p => /confirm/i.test(p.status)).length;
+  const exceptions = people.filter(p => /validar|exce|não contacto/i.test(p.status)).length;
+  const eligible = people.filter(p => /elegível|enviado|confirm|lembrete/i.test(p.status)).length;
+  const manual = people.filter(p => /validar|exce/i.test(p.status)).length;
+  const sent = people.filter(p => p.sent).length;
+  document.getElementById("mTotal").textContent = total;
+  document.getElementById("mEnviar").textContent = prepared;
+  document.getElementById("mConfirm").textContent = confirmed;
+  document.getElementById("mExcecao").textContent = exceptions;
+  document.getElementById("tabLoaded").textContent = `${total} carregadas`;
+  document.getElementById("tabValid").textContent = `${eligible} elegíveis/processadas`;
+  document.getElementById("tabManual").textContent = `${manual} validação humana`;
+  document.getElementById("tabSent").textContent = `${sent} envios simulados`;
+
+  const select = document.getElementById("personSelect");
+  const selected = select.value;
+  select.innerHTML = people.filter(p => p.sent).map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.id)} · ${escapeHtml(p.nome_ficticio)}</option>`).join("");
+  if(selected && [...select.options].some(o => o.value === selected)) select.value = selected;
+  showPhoneForSelected();
+}
+function showPhoneForSelected(reply){
+  const id = document.getElementById("personSelect").value;
+  const p = people.find(x => x.id === id) || people.find(x => x.sent);
+  const screen = document.getElementById("phoneScreen");
+  if(!p){
+    screen.innerHTML = `<div class="bubble">Quando enviares a campanha, a mensagem de convocatória aparecerá aqui.</div>`;
+    return;
+  }
+  const msgs = [`<div class="bubble">${escapeHtml(p.message || "Mensagem ainda não gerada.")}</div>`];
+  if(reply || p.response){
+    msgs.push(`<div class="bubble reply">${escapeHtml(reply || p.response)}</div>`);
+    msgs.push(`<div class="bubble">${escapeHtml(systemReply(p))}</div>`);
+  }
+  screen.innerHTML = msgs.join("");
+}
+function systemReply(p){
+  if(/confirm/i.test(p.status)) return "Obrigada. A equipa irá confirmar o agendamento.";
+  if(/validar/i.test(p.status) && p.response === "JA FIZ") return "Obrigada. A equipa irá validar essa informação.";
+  if(/exce/i.test(p.status)) return "Obrigada. A sua dúvida foi encaminhada para contacto humano.";
+  if(/não contacto/i.test(p.status)) return "Pedido registado. Não receberá novos SMS deste tipo.";
+  if(/lembrete/i.test(p.status)) return "Sem resposta: lembrete agendado automaticamente.";
+  return "Resposta registada.";
+}
+function resetDemo(){
+  people = [];
+  logEntries = [];
+  logEntries.push("[00:00] Sistema pronto. Carregar lista para iniciar.");
+  document.getElementById("logBox").innerHTML = `<div>${logEntries[0]}</div>`;
+  setStep(0);
+  render();
+}
+function exportLog(){
+  const rows = ["data_hora,evento", ...logEntries.map(e => `"${new Date().toISOString()}","${e.replace(/"/g,'""')}"`)];
+  const blob = new Blob([rows.join("\n")], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "log_erastreacor_demo.csv"; a.click();
+  URL.revokeObjectURL(url);
+}
+function copySummary(){
+  const summary = `Resumo da demo eRastreAçor Convoca:
+- Utentes na lista: ${people.length}
+- Convocatórias preparadas: ${people.filter(p => p.message).length}
+- Envios simulados: ${people.filter(p => p.sent).length}
+- Confirmações/agendamentos: ${people.filter(p => /confirm/i.test(p.status)).length}
+- Exceções para validação humana: ${people.filter(p => /validar|exce/i.test(p.status)).length}
+- Pedidos de não contacto digital: ${people.filter(p => /não contacto/i.test(p.status)).length}
+- Lembretes automáticos: ${people.filter(p => /lembrete/i.test(p.status)).length}
+
+Nota: demonstração pedagógica com dados fictícios; nenhum SMS/e-mail real enviado.`;
+  navigator.clipboard?.writeText(summary).then(() => alert("Resumo copiado para a área de transferência."), () => alert(summary));
+}
+resetDemo();
+</script>
+</body>
+</html>
